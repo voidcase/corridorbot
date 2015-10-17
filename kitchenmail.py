@@ -72,7 +72,9 @@ def notify():
         """ + weeklies + """
         Best regards, the corridor bot."""
     send_message(c1,"cleaning reminder",m1)
+    print("mailed", c1['name'], datetime.datetime.now())
     send_message(c2,"cleaning reminder",m2)
+    print("mailed", c2['name'], datetime.datetime.now())
     
     # heads up
     c3 = people[(week+2)%len(people)]
@@ -80,9 +82,11 @@ def notify():
     send_message(c3,"cleaning heads up","""
             Hello human_"""+c3['room']+""". I am notifying you that you have the daily kitchen duties next week. If you will be away, ask someone else to switch week with you.
             Best regards, the corridor bot.""")
+    print("headsup", c3['name'], datetime.datetime.now())
     send_message(c3,"cleaning heads up","""
             Hello human_"""+c4['room']+""". I am notifying you that you have the weekly kitchen duties next week. If you will be away, ask someone else to switch week with you.
             Best regards, the corridor bot.""")
+    print("headsup", c4['name'], datetime.datetime.now())
 
     
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import requests, time, math, datetime, json
-def send_message(profile,content):
+def send_message(profile,subject,content):
     keyfile = open("key","rt")
     apikey = keyfile.read().replace("\n","")
     keyfile.close();
@@ -9,7 +9,7 @@ def send_message(profile,content):
             auth=("api",apikey),
             data={"from": "Corridor bot <postmaster@sandboxe8c945081cc6485e857b525aebd3bab3.mailgun.org>",
                 "to": profile["name"] + " <" + profile["email"] + ">",
-                "subject": "corridor cleaning reminder",
+                "subject": subject,
                 "text": content
                 }
             )
@@ -27,6 +27,21 @@ tasks = [
     'launder towels - Book a washingmachine and launder the towels, 60 degrees <b>without</b> softener.'
 ]
 
+dailies = """
+    take out the trash if it's full.
+    empty the dishracks if they are full.
+    clean the surfaces if they are dirty.
+    clean the stoves if they are dirty.
+    clean the sinks if they are dirty.
+"""
+
+weeklies = """
+    take out the recycling.
+    sweep and mop the floors. (in the corridor, kitchen, and half of the common room facing the parking lot.)
+    make sure we are not running out of supplies (wash-up liquid, grumme såpa, paper towels). Take the reciept to the corridor contact for reimbursement.
+    launder the kitchen towels. 60 degrees. NO softener.
+"""
+
 def get_week():
     t = time.time()
     one_week = 1/60/60/24/7
@@ -43,6 +58,33 @@ def get_people():
         json_data = json.load(json_file)
         return json_data['people']
 
+def notify():
+    people = get_people()
+    week = get_week()
+    c1 = people[(week)%len(people)]
+    c2 = people[(week+1)%len(people)]
+    m1 = """Hello human_"""+c1['room']+""". You have been assigned to this weeks daily kitchen duties.
+        Simply follow this checklist once each day:
+        """ + weeklies + """
+        Best regards, the corridor bot."""
+    m2 = """Hello human_"""+c2['room']+""". You have been assigned to this weeks weekly kitchen duties.
+        Simply get the following items done before the end of the week:
+        """ + weeklies + """
+        Best regards, the corridor bot."""
+    send_message(c1,"cleaning reminder",m1)
+    send_message(c2,"cleaning reminder",m2)
+    
+    # heads up
+    c3 = people[(week+2)%len(people)]
+    c4 = people[(week+3)%len(people)]
+    send_message(c3,"cleaning heads up","""
+            Hello human_"""+c3['room']+""". I am notifying you that you have the daily kitchen duties next week. If you will be away, ask someone else to switch week with you.
+            Best regards, the corridor bot.""")
+    send_message(c3,"cleaning heads up","""
+            Hello human_"""+c4['room']+""". I am notifying you that you have the weekly kitchen duties next week. If you will be away, ask someone else to switch week with you.
+            Best regards, the corridor bot.""")
+
+    
 
 def send_all():
     people = get_people()
@@ -50,7 +92,7 @@ def send_all():
         content = "Hello " + p["name"] + ". This is your kitchen task this week:\n"
         content += get_task(p["room"]) + "\n"
         content += "next week: " + get_task((p["room"]+1)%10) + "\n\n regards, the corridor bot."
-        send_message(p,content)
+        send_message(p,"cleaning reminder",content)
 
 def send_one(name):
     people = get_people()
@@ -58,7 +100,7 @@ def send_one(name):
     content = "Hello " + p["name"] + ". This is your kitchen task this week:\n"
     content += get_task(p["room"]) + "\n"
     content += "next week: " + get_task((p["room"]+1)%10) + "\n\n regards, the corridor bot."
-    send_message(p,content)
+    send_message(p,"cleaning reminder",content)
     print("sent message to",name)
 
 def start():
@@ -66,9 +108,7 @@ def start():
         weekday = datetime.datetime.today().weekday()
         one_day = 60*60*24
         if weekday == 0:
-            send_all()
+            notify()
         now = datetime.datetime.now()
         ssmn = (now - now.replace(hour=0,minute=0,second=0,microsecond=0)).total_seconds()
         time.sleep(one_day*(7-weekday)-ssmn+17*60*60)
-
-send_one("Isak")

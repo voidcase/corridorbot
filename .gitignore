@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# key and privacy protection
+*.json
+key

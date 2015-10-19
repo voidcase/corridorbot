@@ -80,7 +80,7 @@ def notify():
     # heads up
     c3 = people[(week+2)%len(people)]
     send_message(c3,"cleaning heads up","""
-            Hello human_"""+c3['room']+""". I am notifying you that you have the weekly kitchen duties next week. If you will be away, ask someone else to switch week with you.
+            Hello human_"""+str(c3['room'])+""". I am notifying you that you have the weekly kitchen duties next week. If you will be away, ask someone else to switch week with you.
             Best regards, the corridor bot.""")
     print("headsup", c3['name'], datetime.datetime.now())
 

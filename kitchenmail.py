@@ -70,6 +70,7 @@ def notify():
     m2 = """Hello human_"""+str(c2['room'])+""". You have been assigned to this weeks weekly kitchen duties.
         Simply get the following items done before the end of the week:
         """ + str(weeklies) + """
+        Also know that you have the daily duties next week, if you will be away then, ask someone to switch week with you.
         Best regards, the corridor bot."""
     #send_message(c1,"cleaning reminder",m1)
     print("mailed", c1['name'], datetime.datetime.now())
@@ -77,12 +78,7 @@ def notify():
     print("mailed", c2['name'], datetime.datetime.now())
     
     # heads up
-    c3 = people[(week+2)%len(people)]
-    c4 = people[(week+3)%len(people)]
-    #send_message(c3,"cleaning heads up","""
-            #Hello human_"""+c3['room']+""". I am notifying you that you have the daily kitchen duties next week. If you will be away, ask someone else to switch week with you.
-            #Best regards, the corridor bot.""")
-    print("headsup", c3['name'], datetime.datetime.now())
+    c4 = people[(week+2)%len(people)]
     #send_message(c3,"cleaning heads up","""
             #Hello human_"""+c4['room']+""". I am notifying you that you have the weekly kitchen duties next week. If you will be away, ask someone else to switch week with you.
             #Best regards, the corridor bot.""")

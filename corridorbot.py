@@ -1,0 +1,2 @@
+import kitchenmail
+kitchenmail.start()

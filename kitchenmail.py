@@ -58,6 +58,13 @@ def get_people():
         json_data = json.load(json_file)
         return json_data['people']
 
+def get_current():
+    people = get_people()
+    week = get_week()
+    c1 = people[(week)%len(people)]
+    c2 = people[(week+1)%len(people)]
+    return (c1,c2)
+
 def notify():
     people = get_people()
     week = get_week()

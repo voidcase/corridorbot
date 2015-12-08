@@ -58,18 +58,24 @@ def get_people():
         json_data = json.load(json_file)
         return json_data['people']
 
-def get_current():
+def get_pointer():
+    with open("people.json") as json_file:
+        json_data = json.load(json_file)
+        return json_data['pointer']
+
+def person_in(room):
     people = get_people()
-    week = get_week()
-    c1 = people[(week)%len(people)]
-    c2 = people[(week+1)%len(people)]
+    return [a for a in people if a["room"]==room][0]
+
+def get_current():
+    p = get_pointer()
+    c1 = person_in(p)
+    c2 = person_in((p+1)%len(get_people()))
     return (c1,c2)
 
 def notify():
     people = get_people()
-    week = get_week()
-    c1 = people[(week)%len(people)]
-    c2 = people[(week+1)%len(people)]
+    (c1,c2) = get_current()
     m1 = """Hello human_"""+str(c1['room'])+""". You have been assigned to this weeks daily kitchen duties.
         Simply follow this checklist once each day:
         """ + str(dailies) + """
@@ -110,12 +116,22 @@ def send_one(name):
     send_message(p,"cleaning reminder",content)
     print("sent message to",name)
 
+def increment_pointer():
+    pointer = get_pointer()
+    people = get_people()
+    with open("people.json","r+") as json_file:
+        js = json.load(json_file)
+        js['pointer'] = ((pointer+1)%len(people)) + 1
+        json_file.seek(0)
+        json.dump(js,json_file,indent=4)
+
 def start():
     while True:
         weekday = datetime.datetime.today().weekday()
         one_day = 60*60*24
-        if weekday == 0:
-            notify()
         now = datetime.datetime.now()
         ssmn = (now - now.replace(hour=0,minute=0,second=0,microsecond=0)).total_seconds()
+        if weekday == 0 and ssmn >= 17*60*60:
+            increment_pointer()
+            notify()
         time.sleep(one_day*(7-weekday)-ssmn+17*60*60)

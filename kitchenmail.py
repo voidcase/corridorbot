@@ -126,12 +126,11 @@ def increment_pointer():
         json.dump(js,json_file,indent=4)
 
 def start():
+    one_day = 60*60*24
     while True:
         weekday = datetime.datetime.today().weekday()
-        one_day = 60*60*24
         now = datetime.datetime.now()
         ssmn = (now - now.replace(hour=0,minute=0,second=0,microsecond=0)).total_seconds()
-        if weekday == 0 and ssmn >= 17*60*60:
-            increment_pointer()
-            notify()
         time.sleep(one_day*(7-weekday)-ssmn+17*60*60)
+        increment_pointer()
+        notify()

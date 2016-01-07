@@ -121,7 +121,7 @@ def increment_pointer():
     people = get_people()
     with open("people.json","r+") as json_file:
         js = json.load(json_file)
-        js['pointer'] = ((pointer+1)%len(people)) + 1
+        js['pointer'] = ((pointer+1)%len(people))
         json_file.seek(0)
         json.dump(js,json_file,indent=4)
 

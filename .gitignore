@@ -59,6 +59,7 @@ target/
 # key and privacy protection
 *.json
 key
+log.txt
 
 # vim
 *.swp
